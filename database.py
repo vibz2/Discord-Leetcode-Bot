@@ -1,11 +1,12 @@
 import sqlite3
+from schemas import SCHEMAS
 
 DB_NAME = "data.db"
 
 POINTS = {
-    "easy": 1,
-    "medium": 3,
-    "hard": 5
+    "easy": 2,
+    "medium": 4,
+    "hard": 6
 }
 
 
@@ -17,18 +18,8 @@ def init_db():
     conn = get_connection()
     cursor = conn.cursor()
 
-    cursor.execute("""
-    CREATE TABLE IF NOT EXISTS solves (
-        user_id TEXT NOT NULL,
-        username TEXT NOT NULL,
-        problem_id INTEGER NOT NULL,
-        difficulty TEXT NOT NULL,
-        points INTEGER NOT NULL,
-        solved_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-
-        UNIQUE(user_id, problem_id)
-    )
-    """)
+    for schema in SCHEMAS:
+        schema(cursor)
 
     conn.commit()
     conn.close()
@@ -37,12 +28,12 @@ def init_db():
 def add_solve(
     user_id: str,
     username: str,
-    problem_id: int,
+    problem_slug: str,
     difficulty: str
 ):
     difficulty = difficulty.lower()
 
-    if difficulty not in POINTS:
+    if difficulty is None:
         return False, (
             "Difficulty must be easy, medium, or hard."
         )
