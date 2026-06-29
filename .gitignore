@@ -1,0 +1,16 @@
+# Secrets
+.env
+
+# Database
+*.db
+
+# Python
+__pycache__/
+*.pyc
+
+# Virtual environments
+venv/
+.venv/
+
+# IDE
+.vscode/
