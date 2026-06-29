@@ -4,13 +4,15 @@
 # Database
 *.db
 
-# Python
 __pycache__/
+*.py[codz]
+*$py.class
 *.pyc
 
 # Virtual environments
 venv/
 .venv/
+.venv
 
 # IDE
 .vscode/
