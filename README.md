@@ -31,11 +31,11 @@ after doing all of that, just make sure that whatever is trying to run the bot i
 ## Normal User Commands
 /leaderboard - will generate the leaderboard for the server for you to view
 
-/sync - will sync the last 20 leetcode problems u did, so pls remember to sync at least every 20 problems (altho we should be doing it everyday since that's the whole point, do leetcode problems, do sync at end of day)
+/sync - will sync the last 20 leetcode problems you did (fetches it from leetcode api and compares with database for point tracking) 
 
-/link - Simply put in your LeetCode username in this. We need this for the bot to properly get all ur details or do anything with ur acc.
+/link - Simply put in your LeetCode username in this. We need this for the bot to properly get all your details or do anything with your account.
 
-/stats - This is to view ur individual stats. So should show ur current points, how many problems of which difficulty u did, etc.
+/stats - This is to view your individual stats. So should show your current points, how many problems of which difficulty you did, etc.
 
 ## Admin User Commands
 /clear_user - deletes that users points and data. Their user still exists in the database, just wipes their entire point standing
