@@ -51,7 +51,7 @@ async def on_ready():
     except Exception as e:
         print(e)
 
-@bot.tree.command(name="link", description="Link your LeetCode account")
+@bot.tree.command(name="link", description="Link your LeetCode account, input your LeetCode username")
 async def link(interaction: discord.Interaction, username: str):
     link_user(interaction.user.id, interaction.user.display_name, username)
 
