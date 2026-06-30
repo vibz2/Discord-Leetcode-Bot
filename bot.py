@@ -7,9 +7,9 @@ from discord import app_commands
 
 from dotenv import load_dotenv
 
-from database import (
+from db import (
     init_db,
-    add_solve,
+    add_solution,
     get_leaderboard,
     get_user_stats,
 )
@@ -60,7 +60,7 @@ async def solve(
     problem_id: int,
     difficulty: str
 ):
-    success, result = add_solve(
+    success, result = add_solution(
         interaction.user.id,
         interaction.user.display_name,
         problem_id,

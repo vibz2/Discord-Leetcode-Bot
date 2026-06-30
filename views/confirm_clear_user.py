@@ -1,6 +1,6 @@
 import discord
 
-from database import clear_user_data
+from db import clear_user_data
 
 class ConfirmClearUserView(discord.ui.View):
     def __init__(self, user: discord.Member):

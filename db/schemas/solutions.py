@@ -4,6 +4,7 @@ def create_table(cursor):
         user_id TEXT NOT NULL,
         problem_id INTEGER NOT NULL,
         problem_slug TEXT NOT NULL,
+        difficulty TEXT NOT NULL,
         points INTEGER NOT NULL,
         timestamp INTEGER NOT NULL,
         FOREIGN KEY (user_id)

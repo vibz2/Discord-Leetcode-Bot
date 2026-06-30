@@ -1,6 +1,6 @@
 import discord
 
-from database import clear_all_data
+from db import clear_all_data
 
 
 class ConfirmClearAllView(discord.ui.View):
