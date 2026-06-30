@@ -9,10 +9,11 @@ from dotenv import load_dotenv
 
 from db import (
     init_db,
-    add_solution,
     get_leaderboard,
     get_user_stats,
+    link_user
 )
+from leetcode import sync_user
 from views.confirm_clear_all import ConfirmClearAllView
 from views.confirm_clear_user import ConfirmClearUserView
 
@@ -50,86 +51,67 @@ async def on_ready():
     except Exception as e:
         print(e)
 
+@bot.tree.command(name="link", description="Link your LeetCode account")
+async def link(interaction: discord.Interaction, username: str):
+    link_user(interaction.user.id, interaction.user.display_name, username)
 
-@bot.tree.command(
-    name="solve",
-    description="Log a solved LeetCode problem."
-)
-async def solve(
-    interaction: discord.Interaction,
-    problem_id: int,
-    difficulty: str
-):
-    success, result = add_solution(
-        interaction.user.id,
-        interaction.user.display_name,
-        problem_id,
-        difficulty
-    )
+    await interaction.response.send_message(f"Linked LeetCode account: {username}")
 
-    if success:
+@bot.tree.command(name="sync", description="Sync your LeetCode problems")
+async def sync(interaction: discord.Interaction):
+    try:
+        result = sync_user(interaction.user.id)
         await interaction.response.send_message(
-            f"YIPPEE! Logged problem #{problem_id}\n"
-            f"+{result} points awarded."
+            f"Sync Complete!!\n\n"
+            f"Imported: {result['imported']}\n"
+            f"Skipped: {result['skipped']}\n"
+            f"Points Earned: {result['points']}"
         )
-    else:
+    except ValueError as e:
         await interaction.response.send_message(
-            f"ERR You got something wrong mister! {result}",
+            str(e),
+            ephemeral=True
+        )
+    
+    except Exception as e:
+        await interaction.response.send_message(
+            f"Sync failed: {e}",
             ephemeral=True
         )
 
 
-@bot.tree.command(
-    name="leaderboard",
-    description="View server leaderboard."
-)
-async def leaderboard(
-    interaction: discord.Interaction
-):
+
+@bot.tree.command(name="leaderboard", description="View server leaderboard.")
+async def leaderboard(interaction: discord.Interaction):
     rows = get_leaderboard()
 
     if not rows:
-        await interaction.response.send_message(
-            "No solves have been logged yet."
-        )
+        await interaction.response.send_message("No problems have been logged yet.")
         return
 
     message = "**Leaderboard**\n\n"
 
-    for index, (
-        username,
-        points
-    ) in enumerate(rows, start=1):
-
+    for index, (username, points) in enumerate(rows, start=1):
         message += (
             f"{index}. "
             f"**{username}** "
             f"- {points} pts\n"
         )
 
-    await interaction.response.send_message(
-        message
-    )
+    await interaction.response.send_message(message)
 
 
-@bot.tree.command(
-    name="stats",
-    description="View your solve statistics."
-)
-async def stats(
-    interaction: discord.Interaction
-):
-    stats_data = get_user_stats(
-        interaction.user.id
-    )
+@bot.tree.command(name="stats", description="View your solution statistics.")
+async def stats(interaction: discord.Interaction):
+    stats_data = get_user_stats(interaction.user.id)
 
     embed = discord.Embed(
-        title=f"{interaction.user.display_name}'s Stats"
+        title=(f"{interaction.user.display_name}'s Stats")
     )
 
     embed.add_field(
-        name="Total Solves",
-        value=stats_data["solves"],
+        name="Unique Problems",
+        value=stats_data["solutions"],
         inline=False
     )
 
@@ -154,67 +136,27 @@ async def stats(
         value=stats_data["hard"]
     )
 
-    await interaction.response.send_message(
-        embed=embed
-    )
+    await interaction.response.send_message(embed=embed)
 
-@bot.tree.command(
-    name="clear_user",
-    description="Remove all solves for a user."
-)
-@app_commands.default_permissions(
-    administrator=True
-)
-async def clearuser(
-    interaction: discord.Interaction,
-    user: discord.Member
-):
+
+@bot.tree.command(name="clear_user", description="Remove all solves for a user.")
+@app_commands.default_permissions(administrator=True)
+async def clear_user(interaction: discord.Interaction, user: discord.Member):
     await interaction.response.send_message(
-        f"CAUTION!! This will delete all data for {user.display_name}.",
+        (f"CAUTION!! This will delete all data for {user.display_name}."),
         view=ConfirmClearUserView(user),
         ephemeral=True
     )
 
-@bot.tree.command(
-    name="clear_all",
-    description="Remove all solve data."
-)
-@app_commands.default_permissions(
-    administrator=True
-)
-async def clearall(
-    interaction: discord.Interaction
-):
+
+@bot.tree.command(name="clear_all",description="Remove all solve data.")
+@app_commands.default_permissions(administrator=True)
+async def clear_all(interaction: discord.Interaction):
     await interaction.response.send_message(
-        "CAUTION!! This will delete all solve data.",
+        ("CAUTION!! This will delete all solve data."),
         view=ConfirmClearAllView(),
         ephemeral=True
     )
-
-@bot.tree.command(
-    name="sync",
-    description="Sync LeetCode solves."
-)
-async def sync(
-    interaction: discord.Interaction
-):
-    try:
-        result = sync_user(
-            interaction.user.id
-        )
-
-        await interaction.response.send_message(
-            f"Sync complete!\n\n"
-            f"Imported: {result['imported']}\n"
-            f"Skipped: {result['skipped']}\n"
-            f"Points Earned: {result['points']}"
-        )
-
-    except ValueError as e:
-        await interaction.response.send_message(
-            str(e),
-            ephemeral=True
-        )
 
 
 bot.run(TOKEN)

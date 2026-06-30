@@ -1,4 +1,4 @@
-from db.scripts.init_db import get_connection
+from db import get_connection
 
 def link_user(discord_id, discord_username, leetcode_username):
     conn = get_connection()

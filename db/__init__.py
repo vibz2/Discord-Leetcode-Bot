@@ -1,3 +1,9 @@
+# Initialize Database
+from db.scripts.init_db import (
+    get_connection,
+    init_db
+)
+
 # User functions
 from db.scripts.db_users import (
     link_user,
@@ -20,6 +26,10 @@ from db.scripts.db_fetch import (
 )
 
 __all__ = [
+    # Initialize Database
+    "get_connection",
+    "init_db",
+
     # User functions
     "link_user",
     "get_leetcode_username",
