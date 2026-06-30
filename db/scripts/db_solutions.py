@@ -1,10 +1,33 @@
-from db import get_connection
+from db.scripts.init_db import get_connection
 
 POINTS = {
     "easy": 2,
     "medium": 4,
     "hard": 6
 }
+
+def submission_exists(
+    user_id,
+    problem_slug,
+    timestamp
+):
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+    SELECT 1
+    FROM solutions
+    WHERE user_id = ?
+    AND problem_slug = ?
+    AND timestamp = ?
+    LIMIT 1
+    """, (str(user_id), problem_slug, int(timestamp)))
+
+    result = cursor.fetchone()
+
+    conn.close()
+
+    return result is not None
 
 def has_solved_before(user_id, problem_slug):
     conn = get_connection()
@@ -19,7 +42,7 @@ def has_solved_before(user_id, problem_slug):
                    """, (str(user_id), problem_slug))
     
     result = cursor.fetchone()
-    conn.close
+    conn.close()
 
     return result is not None
 
@@ -51,8 +74,8 @@ def add_solution(user_id, problem_id, problem_slug, difficulty, timestamp):
         difficulty,
         points,
         timestamp
-                   ), VALUES (?, ?, ?, ?, ?, ?)
-                   """, (user_id, problem_id, problem_id, difficulty, points, timestamp))
+                   ) VALUES (?, ?, ?, ?, ?, ?)
+                   """, (user_id, problem_id, problem_slug, difficulty, points, timestamp))
     
     conn.commit()
     conn.close()
@@ -64,7 +87,7 @@ def clear_user_data(user_id):
     cursor = conn.cursor()
 
     cursor.execute("""
-    DELETE FROM solves
+    DELETE FROM solutions
     WHERE user_id = ?
     """, (str(user_id),))
 
@@ -80,7 +103,7 @@ def clear_all_data():
     cursor = conn.cursor()
 
     cursor.execute("""
-    DELETE FROM solves
+    DELETE FROM solutions
     """)
 
     deleted = cursor.rowcount

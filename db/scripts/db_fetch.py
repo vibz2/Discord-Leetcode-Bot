@@ -1,4 +1,4 @@
-from db import get_connection
+from db.scripts.init_db import get_connection
 
 def get_leaderboard():
     conn = get_connection()
@@ -57,11 +57,13 @@ def get_user_stats(user_id):
 
     for difficult, count in cursor.fetchall():
         counts[difficult] = count
+    
+    conn.close()
 
     return {
         "solutions": unique_solutions,
         "points": total_points,
-        "easy": count["easy"],
-        "medium": count["medium"],
-        "hard": count["hard"]
+        "easy": counts["easy"],
+        "medium": counts["medium"],
+        "hard": counts["hard"]
     }

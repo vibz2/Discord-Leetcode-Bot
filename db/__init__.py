@@ -1,13 +1,12 @@
-# Database Initialization
-from db.scripts.init_db import init_db, get_connection
-
 # User functions
 from db.scripts.db_users import (
-    link_user
+    link_user,
+    get_leetcode_username
 )
 
 # Solution/Problem Functions
 from db.scripts.db_solutions import (
+    submission_exists,
     has_solved_before,
     add_solution,
     clear_user_data,
@@ -21,14 +20,12 @@ from db.scripts.db_fetch import (
 )
 
 __all__ = [
-    #Database Initialization
-    "init_db",
-    "get_connection",
-
     # User functions
     "link_user",
+    "get_leetcode_username",
 
     # Solution/Problem Functions
+    "submission_exists",
     "has_solved_before",
     "add_solution",
     "clear_user_data",

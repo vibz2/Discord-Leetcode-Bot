@@ -191,5 +191,30 @@ async def clearall(
         ephemeral=True
     )
 
+@bot.tree.command(
+    name="sync",
+    description="Sync LeetCode solves."
+)
+async def sync(
+    interaction: discord.Interaction
+):
+    try:
+        result = sync_user(
+            interaction.user.id
+        )
+
+        await interaction.response.send_message(
+            f"Sync complete!\n\n"
+            f"Imported: {result['imported']}\n"
+            f"Skipped: {result['skipped']}\n"
+            f"Points Earned: {result['points']}"
+        )
+
+    except ValueError as e:
+        await interaction.response.send_message(
+            str(e),
+            ephemeral=True
+        )
+
 
 bot.run(TOKEN)
