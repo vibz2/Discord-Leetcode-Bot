@@ -59,22 +59,24 @@ async def link(interaction: discord.Interaction, username: str):
 
 @bot.tree.command(name="sync", description="Sync your LeetCode problems")
 async def sync(interaction: discord.Interaction):
+    await interaction.response.defer()
+    
     try:
         result = sync_user(interaction.user.id)
-        await interaction.response.send_message(
+        await interaction.followup.send(
             f"Sync Complete!!\n\n"
             f"Imported: {result['imported']}\n"
             f"Skipped: {result['skipped']}\n"
             f"Points Earned: {result['points']}"
         )
     except ValueError as e:
-        await interaction.response.send_message(
+        await interaction.followup.send(
             str(e),
             ephemeral=True
         )
     
     except Exception as e:
-        await interaction.response.send_message(
+        await interaction.followup.send(
             f"Sync failed: {e}",
             ephemeral=True
         )
