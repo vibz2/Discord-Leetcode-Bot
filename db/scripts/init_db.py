@@ -1,7 +1,7 @@
 import sqlite3
 from db.schemas import SCHEMAS
 
-DB_NAME = "data.db"
+DB_NAME = "/data/data.db"
 
 def get_connection():
     conn = sqlite3.connect(DB_NAME)
