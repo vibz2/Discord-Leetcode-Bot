@@ -1,4 +1,4 @@
-from db.scripts.init_db import get_connection
+from db import get_connection
 
 def get_leaderboard():
     conn = get_connection()
